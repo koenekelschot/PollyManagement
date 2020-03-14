@@ -94,7 +94,7 @@ namespace PollyManagement.PolicyManager.Test
         }
 
         [Test]
-        public void GetKeys_IfDoesNotContainPolicies_ThenReturnEmpty()
+        public void GetKeys_IfDoesNotContainPolicies_ThenReturnEmptyResult()
         {
             var keys = _sut.GetKeys();
 
@@ -113,6 +113,29 @@ namespace PollyManagement.PolicyManager.Test
             Assert.IsTrue(keys.Any(key => key == "a"));
             Assert.IsTrue(keys.Any(key => key == "b"));
             Assert.IsFalse(keys.Any(key => key == "c"));
+        }
+
+        [Test]
+        public void GetCircuitStates_IfDoesNotContainPolicies_ThenReturnEmptyResult()
+        {
+            var states = _sut.GetCircuitStates();
+
+            Assert.IsEmpty(states.Keys);
+        }
+
+        [Test]
+        public void GetCircuitStates_IfDoesContainPolicies_ThenReturnAllStates()
+        {
+            var policyA = GetCircuitBreakerPolicy();
+            var policyB = GetCircuitBreakerPolicy();
+            _sut.Registry.Add("a", policyA);
+            _sut.Registry.Add("b", policyB);
+
+            var states = _sut.GetCircuitStates();
+
+            Assert.IsNotEmpty(states.Keys);
+            Assert.AreEqual(policyA.CircuitState, states["a"]);
+            Assert.AreEqual(policyB.CircuitState, states["b"]);
         }
 
         [Test]

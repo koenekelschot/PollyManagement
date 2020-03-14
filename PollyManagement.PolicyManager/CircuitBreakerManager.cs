@@ -37,6 +37,18 @@ namespace PollyManagement.PolicyManager
             }
         }
 
+        public IDictionary<string, CircuitState> GetCircuitStates()
+        {
+            var dict = new Dictionary<string, CircuitState>(Registry.Count);
+
+            foreach (var policy in Registry)
+            {
+                dict.Add(policy.Key, Registry.Get<ICircuitBreakerPolicy>(policy.Key).CircuitState);
+            }
+
+            return dict;
+        }
+
         public CircuitState GetCircuitState(string key)
         {
             ThrowOnNotRegistered(key, out ICircuitBreakerPolicy policy);
