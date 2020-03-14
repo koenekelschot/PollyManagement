@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PollyManagement.Webapplication", "PollyManagement.Webapplication\PollyManagement.Webapplication.csproj", "{1B26CA78-35BB-46B9-94CF-037E06FF9383}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyManagement.PolicyManager", "PollyManagement.PolicyManager\PollyManagement.PolicyManager.csproj", "{2FA6AB69-EACA-4618-994A-EB0733D1106E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PollyManagement.PolicyManager", "PollyManagement.PolicyManager\PollyManagement.PolicyManager.csproj", "{2FA6AB69-EACA-4618-994A-EB0733D1106E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyManagement.PolicyManager.Test", "PollyManagement.PolicyManager.Test\PollyManagement.PolicyManager.Test.csproj", "{BD792A6D-64D4-4BD2-8052-C55DF34943FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{2FA6AB69-EACA-4618-994A-EB0733D1106E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FA6AB69-EACA-4618-994A-EB0733D1106E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FA6AB69-EACA-4618-994A-EB0733D1106E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD792A6D-64D4-4BD2-8052-C55DF34943FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD792A6D-64D4-4BD2-8052-C55DF34943FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD792A6D-64D4-4BD2-8052-C55DF34943FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD792A6D-64D4-4BD2-8052-C55DF34943FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
