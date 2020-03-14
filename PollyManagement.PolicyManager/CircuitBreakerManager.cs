@@ -14,7 +14,7 @@ namespace PollyManagement.PolicyManager
             Registry = new PolicyRegistry();
         }
 
-        public CircuitBreakerPolicy GetOrAdd<ICircuitBreakerPolicy>(string key, CircuitBreakerPolicy policy)
+        public TPolicy GetOrAdd<TPolicy>(string key, TPolicy policy) where TPolicy : ICircuitBreakerPolicy
         {
             return Registry.GetOrAdd(key, policy);
         }
@@ -39,21 +39,21 @@ namespace PollyManagement.PolicyManager
 
         public CircuitState GetCircuitState(string key)
         {
-            ThrowOnNotRegistered(key, out CircuitBreakerPolicy policy);
+            ThrowOnNotRegistered(key, out ICircuitBreakerPolicy policy);
 
             return policy.CircuitState;
         }
 
         public Exception GetLastException(string key)
         {
-            ThrowOnNotRegistered(key, out CircuitBreakerPolicy policy);
+            ThrowOnNotRegistered(key, out ICircuitBreakerPolicy policy);
 
             return policy.LastException;
         }
 
         public bool TryIsolate(string key)
         {
-            ThrowOnNotRegistered(key, out CircuitBreakerPolicy policy);
+            ThrowOnNotRegistered(key, out ICircuitBreakerPolicy policy);
 
             policy.Isolate();
             return policy.CircuitState == CircuitState.Isolated;
@@ -61,13 +61,13 @@ namespace PollyManagement.PolicyManager
 
         public bool TryReset(string key)
         {
-            ThrowOnNotRegistered(key, out CircuitBreakerPolicy policy);
+            ThrowOnNotRegistered(key, out ICircuitBreakerPolicy policy);
 
             policy.Reset();
             return policy.CircuitState == CircuitState.Closed;
         }
 
-        private void ThrowOnNotRegistered(string key, out CircuitBreakerPolicy policy)
+        private void ThrowOnNotRegistered(string key, out ICircuitBreakerPolicy policy)
         {
             if (!Registry.TryGet(key, out policy))
             {

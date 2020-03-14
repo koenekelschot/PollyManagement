@@ -6,11 +6,49 @@ using System.Linq;
 
 namespace PollyManagement.PolicyManager.Test
 {
-    internal class CircuitBreakerManagerTest
+    [TestFixture]
+    internal class CircuitBreakerManagerDefaultPolicyTest : AbstractCircuitBreakerManagerTest<CircuitBreakerPolicy>
+    {
+        protected override CircuitBreakerPolicy GetCircuitBreakerPolicy()
+        {
+            return Policy.Handle<Exception>().AdvancedCircuitBreaker(1.0, TimeSpan.FromSeconds(1), 2, TimeSpan.FromMinutes(1));
+        }
+    }
+
+    [TestFixture]
+    internal class CircuitBreakerManagerDefaultTResultPolicyTest : AbstractCircuitBreakerManagerTest<CircuitBreakerPolicy<object>>
+    {
+        protected override CircuitBreakerPolicy<object> GetCircuitBreakerPolicy()
+        {
+            return Policy<object>.Handle<Exception>().AdvancedCircuitBreaker(1.0, TimeSpan.FromSeconds(1), 2, TimeSpan.FromMinutes(1));
+        }
+    }
+
+    [TestFixture]
+    internal class CircuitBreakerManagerAsyncPolicyTest : AbstractCircuitBreakerManagerTest<AsyncCircuitBreakerPolicy>
+    {
+        protected override AsyncCircuitBreakerPolicy GetCircuitBreakerPolicy()
+        {
+            return Policy.Handle<Exception>().AdvancedCircuitBreakerAsync(1.0, TimeSpan.FromSeconds(1), 2, TimeSpan.FromMinutes(1));
+        }
+    }
+
+    [TestFixture]
+    internal class CircuitBreakerManagerAsyncTResultPolicyTest : AbstractCircuitBreakerManagerTest<AsyncCircuitBreakerPolicy<object>>
+    {
+        protected override AsyncCircuitBreakerPolicy<object> GetCircuitBreakerPolicy()
+        {
+            return Policy<object>.Handle<Exception>().AdvancedCircuitBreakerAsync(1.0, TimeSpan.FromSeconds(1), 2, TimeSpan.FromMinutes(1));
+        }
+    }
+
+    internal abstract class AbstractCircuitBreakerManagerTest<TPolicy> where TPolicy : ICircuitBreakerPolicy
     {
         private CircuitBreakerManager _sut;
-        private CircuitBreakerPolicy _testPolicy;
+        private TPolicy _testPolicy;
         private const string TestKey = "test";
+
+        protected abstract TPolicy GetCircuitBreakerPolicy();
 
         [SetUp]
         public void Setup()
@@ -23,7 +61,7 @@ namespace PollyManagement.PolicyManager.Test
         [Test]
         public void GetOrAdd_IfPolicyDoesNotExist_ThenReturnAddedPolicy()
         {
-            var policy = _sut.GetOrAdd<CircuitBreakerPolicy>(TestKey, _testPolicy);
+            var policy = _sut.GetOrAdd(TestKey, _testPolicy);
 
             Assert.AreEqual(1, _sut.Registry.Count);
             Assert.IsTrue(_sut.Registry.ContainsKey(TestKey));
@@ -35,7 +73,7 @@ namespace PollyManagement.PolicyManager.Test
         {
             var initialPolicy = GetCircuitBreakerPolicy();
             _sut.Registry.Add(TestKey, initialPolicy);
-            var policy = _sut.GetOrAdd<CircuitBreakerPolicy>(TestKey.ToUpper(), _testPolicy);
+            var policy = _sut.GetOrAdd(TestKey.ToUpper(), _testPolicy);
 
             Assert.AreEqual(2, _sut.Registry.Count);
             Assert.IsTrue(_sut.Registry.ContainsKey(TestKey));
@@ -48,7 +86,7 @@ namespace PollyManagement.PolicyManager.Test
         {
             _sut.Registry.Add(TestKey, GetCircuitBreakerPolicy());
 
-            var policy = _sut.GetOrAdd<CircuitBreakerPolicy>(TestKey, _testPolicy);
+            var policy = _sut.GetOrAdd(TestKey, _testPolicy);
 
             Assert.AreEqual(1, _sut.Registry.Count);
             Assert.IsTrue(_sut.Registry.ContainsKey(TestKey));
@@ -139,11 +177,6 @@ namespace PollyManagement.PolicyManager.Test
 
             var result = _sut.TryReset(TestKey);
             Assert.IsTrue(result);
-        }
-
-        private CircuitBreakerPolicy GetCircuitBreakerPolicy()
-        {
-            return Policy.Handle<Exception>().AdvancedCircuitBreaker(1.0, TimeSpan.FromSeconds(1), 2, TimeSpan.FromMinutes(1));
         }
     }
 }
