@@ -8,6 +8,7 @@ namespace PollyManagement.PolicyManager
     public class CircuitBreakerManager
     {
         internal readonly PolicyRegistry Registry;
+        private readonly object _lock = new object();
 
         public CircuitBreakerManager()
         {
@@ -16,7 +17,18 @@ namespace PollyManagement.PolicyManager
 
         public TPolicy GetOrAdd<TPolicy>(string key, TPolicy policy) where TPolicy : ICircuitBreakerPolicy
         {
-            return Registry.GetOrAdd(key, policy);
+            //Polly 7.2.0 does implement GetOrAdd
+            //return Registry.GetOrAdd(key, policy);
+            lock (_lock)
+            {
+                if (!Registry.TryGet(key, out TPolicy registeredPolicy))
+                {
+                    Registry.Add(key, policy);
+                    registeredPolicy = policy;
+                }
+
+                return registeredPolicy;
+            }
         }
 
         //public CircuitBreakerPolicy GetOrAdd<ICircuitBreakerPolicy>(string key, Func<string, CircuitBreakerPolicy> policyFactory)
