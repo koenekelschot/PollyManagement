@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using Polly;
+using Polly.CircuitBreaker;
 using PollyManagement.PolicyManager;
 
 namespace PollyManagement
@@ -30,8 +26,9 @@ namespace PollyManagement
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSingleton<CircuitBreakerManager>();
-            //services.AddSingleton<CircuitBreakerManager>(); //multiple registrations doens't seem to be a problem
+            var circuitBreakerManager = new CircuitBreakerManager();
+            circuitBreakerManager.TryAdd("Ideal-Policy", policy);
+            services.AddSingleton(circuitBreakerManager);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,5 +41,19 @@ namespace PollyManagement
 
             app.UseMvc();
         }
+
+        private readonly AsyncCircuitBreakerPolicy policy = Policy.Handle<Exception>()
+            .AdvancedCircuitBreakerAsync(failureThreshold: 0.5,
+                samplingDuration: TimeSpan.FromMinutes(2),
+                minimumThroughput: 2,
+                durationOfBreak: TimeSpan.FromMinutes(5),
+                onBreak: (Exception e, TimeSpan span) =>
+                {
+                    //Policy did break
+                },
+                onReset: () =>
+                {
+                    //Policy did reset
+                });
     }
 }
