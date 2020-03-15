@@ -59,6 +59,61 @@ namespace PollyManagement.PolicyManager.Test
         }
 
         [Test]
+        public void TryAdd_IfPolicyDoesNotExist_ThenAddPolicyAndReturnTrue()
+        {
+            var result = _sut.TryAdd(TestKey, _testPolicy);
+
+            Assert.AreEqual(1, _sut.Registry.Count);
+            Assert.IsTrue(_sut.Registry.ContainsKey(TestKey));
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public void TryAdd_IfPolicyDoesExist_ThenReturnFalse()
+        {
+            _sut.Registry.Add(TestKey, GetCircuitBreakerPolicy());
+
+            var result = _sut.TryAdd(TestKey, _testPolicy);
+
+            Assert.AreEqual(1, _sut.Registry.Count);
+            Assert.IsTrue(_sut.Registry.ContainsKey(TestKey));
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void TryAdd_IfPolicyWithDifferentKeyCasing_ThenAddPolicyAndReturnTrue()
+        {
+            var initialPolicy = GetCircuitBreakerPolicy();
+            _sut.Registry.Add(TestKey, initialPolicy);
+            var result = _sut.TryAdd(TestKey.ToUpper(), _testPolicy);
+
+            Assert.AreEqual(2, _sut.Registry.Count);
+            Assert.IsTrue(_sut.Registry.ContainsKey(TestKey));
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public void TryGet_IfPolicyDoesNotExist_ThenReturnFalseAndNullOutParam()
+        {
+            var result = _sut.TryGet(TestKey, out ICircuitBreakerPolicy policy);
+
+            Assert.IsFalse(result);
+            Assert.IsNull(policy);
+        }
+
+        [Test]
+        public void TryGet_IfPolicyDoesExist_ThenReturnTrueAndNotNullOutParam()
+        {
+            _sut.Registry.Add(TestKey, _testPolicy);
+
+            var result = _sut.TryGet(TestKey, out ICircuitBreakerPolicy policy);
+
+            Assert.IsTrue(result);
+            Assert.IsNotNull(policy);
+            Assert.AreSame(_testPolicy, policy);
+        }
+
+        [Test]
         public void GetOrAdd_IfPolicyDoesNotExist_ThenReturnAddedPolicy()
         {
             var policy = _sut.GetOrAdd(TestKey, _testPolicy);

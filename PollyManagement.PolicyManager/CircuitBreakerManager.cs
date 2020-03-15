@@ -15,31 +15,40 @@ namespace PollyManagement.PolicyManager
             Registry = new PolicyRegistry();
         }
 
+        public bool TryAdd<TPolicy>(string key, TPolicy policy) where TPolicy : ICircuitBreakerPolicy
+        {
+            var added = false;
+            lock (_lock)
+            {
+                if (!Registry.ContainsKey(key))
+                {
+                    Registry.Add(key, policy);
+                    added = true;
+                }
+            }
+            return added;
+        }
+
+        public bool TryGet<TPolicy>(string key, out TPolicy policy) where TPolicy : ICircuitBreakerPolicy
+        {
+            return Registry.TryGet(key, out policy);
+        }
+
         public TPolicy GetOrAdd<TPolicy>(string key, TPolicy policy) where TPolicy : ICircuitBreakerPolicy
         {
             //Polly 7.2.0 does implement GetOrAdd
             //return Registry.GetOrAdd(key, policy);
+            TPolicy registeredPolicy = default;
             lock (_lock)
             {
-                if (!Registry.TryGet(key, out TPolicy registeredPolicy))
+                if (!Registry.TryGet(key, out registeredPolicy))
                 {
                     Registry.Add(key, policy);
                     registeredPolicy = policy;
                 }
-
-                return registeredPolicy;
             }
+            return registeredPolicy;
         }
-
-        //public CircuitBreakerPolicy GetOrAdd<ICircuitBreakerPolicy>(string key, Func<string, CircuitBreakerPolicy> policyFactory)
-        //{
-        //    return Registry.GetOrAdd(key, policyFactory);
-        //}
-
-        //public CircuitBreakerPolicy<TResult> GetOrAdd<ICircuitBreakerPolicy>(string key, CircuitBreakerPolicy<TResult> policy)
-        //{
-        //    return (CircuitBreakerPolicy<TResult>)_policyRegistry.GetOrAdd(key, policy);
-        //}
 
         public IEnumerable<string> GetKeys()
         {
