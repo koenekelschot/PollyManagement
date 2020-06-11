@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Polly.CircuitBreaker;
 using PollyManagement.PolicyManager;
+using PollyManagement.PolicyManager.Implementations;
 using System.Collections.Generic;
 
 namespace PollyManagement.Webapplication.Extensions
@@ -26,13 +27,13 @@ namespace PollyManagement.Webapplication.Extensions
             return services;
         }
 
-        private static CircuitBreakerManager GetOrAddManager(IServiceCollection services)
+        private static ICircuitBreakerManager GetOrAddManager(IServiceCollection services)
         {
-            CircuitBreakerManager manager;
+            ICircuitBreakerManager manager;
 
             using (var provider = services.BuildServiceProvider())
             {
-                manager = provider.GetService<CircuitBreakerManager>();
+                manager = provider.GetService<ICircuitBreakerManager>();
                 if (manager == null)
                 {
                     manager = new CircuitBreakerManager();

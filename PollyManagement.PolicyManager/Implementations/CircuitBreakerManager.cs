@@ -3,11 +3,11 @@ using Polly.Registry;
 using System;
 using System.Collections.Generic;
 
-namespace PollyManagement.PolicyManager
+namespace PollyManagement.PolicyManager.Implementations
 {
-    public class CircuitBreakerManager
+    public class CircuitBreakerManager : ICircuitBreakerManager
     {
-        internal readonly PolicyRegistry Registry;
+        internal readonly IPolicyRegistry<string> Registry;
         private readonly object _lock = new object();
 
         public CircuitBreakerManager()

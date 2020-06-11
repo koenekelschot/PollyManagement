@@ -9,9 +9,9 @@ namespace PollyManagement.Controllers
     public class ManagementController : ControllerBase
     {
         private readonly ILogger<ManagementController> _logger;
-        private readonly CircuitBreakerManager _circuitBreakerManager;
+        private readonly ICircuitBreakerManager _circuitBreakerManager;
 
-        public ManagementController(ILogger<ManagementController> logger, CircuitBreakerManager circuitBreakerManager)
+        public ManagementController(ILogger<ManagementController> logger, ICircuitBreakerManager circuitBreakerManager)
         {
             _logger = logger;
             _circuitBreakerManager = circuitBreakerManager;

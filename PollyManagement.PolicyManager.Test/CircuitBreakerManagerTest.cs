@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using Polly;
 using Polly.CircuitBreaker;
+using PollyManagement.PolicyManager.Implementations;
 using System;
 using System.Linq;
 

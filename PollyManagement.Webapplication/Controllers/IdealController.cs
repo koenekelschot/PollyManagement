@@ -15,9 +15,9 @@ namespace PollyManagement.Controllers
     public class IdealController : ControllerBase
     {
         private readonly ILogger<IdealController> _logger;
-        private readonly CircuitBreakerManager _circuitBreakerManager;
+        private readonly ICircuitBreakerManager _circuitBreakerManager;
 
-        public IdealController(ILogger<IdealController> logger, CircuitBreakerManager circuitBreakerManager)
+        public IdealController(ILogger<IdealController> logger, ICircuitBreakerManager circuitBreakerManager)
         {
             _logger = logger;
             _circuitBreakerManager = circuitBreakerManager;

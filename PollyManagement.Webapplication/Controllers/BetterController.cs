@@ -15,11 +15,11 @@ namespace PollyManagement.Controllers
     public class BetterController : ControllerBase
     {
         private readonly ILogger<BetterController> _logger;
-        private readonly CircuitBreakerManager _circuitBreakerManager;
+        private readonly ICircuitBreakerManager _circuitBreakerManager;
 
         private const string PolicyName = "BetterController-Policy";
 
-        public BetterController(ILogger<BetterController> logger, CircuitBreakerManager circuitBreakerManager)
+        public BetterController(ILogger<BetterController> logger, ICircuitBreakerManager circuitBreakerManager)
         {
             _logger = logger;
             _circuitBreakerManager = circuitBreakerManager;
