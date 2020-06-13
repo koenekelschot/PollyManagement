@@ -4,14 +4,13 @@ using PollyManagement.PolicyManager;
 using PollyManagement.PolicyManager.Implementations;
 using System.Collections.Generic;
 
-namespace PollyManagement.Webapplication.Extensions
+namespace PollyManagement.ServiceCollection
 {
-    public static class ServiceCollectionExtensions
+    public static class CircuitBreakerManagerExtensions
     {
         public static IServiceCollection AddPollyRegistry(this IServiceCollection services)
         {
-            _ = GetOrAddManager(services);
-            return services;
+            return services.AddSingleton<ICircuitBreakerManager>(new CircuitBreakerManager());
         }
 
         public static IServiceCollection AddPollyPolicy<TPolicy>(this IServiceCollection services, string policyName, TPolicy policy) where TPolicy : ICircuitBreakerPolicy

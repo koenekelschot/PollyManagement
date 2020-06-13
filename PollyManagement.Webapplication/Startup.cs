@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.CircuitBreaker;
-using PollyManagement.Webapplication.Extensions;
+using PollyManagement.ServiceCollection;
 
 namespace PollyManagement
 {
