@@ -29,6 +29,9 @@ namespace PollyManagement.ServiceCollection.Test
             const string registeredPolicyName = "Test";
             var serviceCollection = SetupRegisteredManager(registeredPolicyName);
 
+            serviceCollection.AddPollyRegistry();
+
+            Assert.AreEqual(1, serviceCollection.Count);
             var instance = serviceCollection[0].ImplementationInstance as CircuitBreakerManager;
             AssertManagerContainsPolicy(instance, registeredPolicyName);
         }

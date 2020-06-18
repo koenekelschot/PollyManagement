@@ -10,13 +10,13 @@ namespace PollyManagement.ServiceCollection
     {
         public static IServiceCollection AddPollyRegistry(this IServiceCollection services)
         {
-            return services.AddSingleton<ICircuitBreakerManager>(new CircuitBreakerManager());
+            _ = GetOrAddManager(services);
+            return services;
         }
 
         public static IServiceCollection AddPollyPolicy<TPolicy>(this IServiceCollection services, string policyName, TPolicy policy) where TPolicy : ICircuitBreakerPolicy
         {
             _ = GetOrAddManager(services).TryAdd(policyName, policy);
-
             return services;
         }
 
