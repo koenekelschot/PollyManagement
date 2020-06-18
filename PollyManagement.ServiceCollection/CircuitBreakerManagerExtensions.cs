@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Polly.CircuitBreaker;
 using PollyManagement.PolicyManager;
 using PollyManagement.PolicyManager.Implementations;
@@ -10,7 +11,7 @@ namespace PollyManagement.ServiceCollection
     {
         public static IServiceCollection AddPollyRegistry(this IServiceCollection services)
         {
-            _ = GetOrAddManager(services);
+            services.TryAddSingleton<ICircuitBreakerManager>(new CircuitBreakerManager());
             return services;
         }
 
@@ -41,7 +42,7 @@ namespace PollyManagement.ServiceCollection
                 if (manager == null)
                 {
                     manager = new CircuitBreakerManager();
-                    services.AddSingleton(manager);
+                    _ = services.AddSingleton(manager);
                 }
             }
 
